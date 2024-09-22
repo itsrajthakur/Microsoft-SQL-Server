@@ -1,0 +1,64 @@
+MS SQL Server - Assignment 3
+
+1. Creating, altering and dropping a database				
+2. Creating and working with tables				
+3. Default Constraint				
+4. Cascading referential integrity				
+5. Check Constraint				
+6. Identity column				
+7. Get last generated id in sql server				
+8. Unique key constraint in SQL Server				
+9. SQL Select statement				
+10. Group By in SQL Server				
+11. Basic Joins				
+12. Advanced Joins				
+13. Self join				
+14. Different ways to replace NULL				
+15. Coalesce function				
+16. Union and Union All				
+17. Stored Procedures				
+18. Stored Procedures with output parameters				
+19. Difference between output parameters and return values				
+20. Advantages of stored procedures				
+21. Built in string functions				
+22. Left, Reight, Charindex and Substring functions				
+23. Replicate, Space, Patindex, Replace and Stuff functions				
+24. DateTime functions				
+25. IsDate, Day, Month, Year and DateName functions				
+26. DatePart, DateAdd and DateDiff functions				
+27. Convert and Cast functions				
+28. Mathematical functions				
+29. Scalar User Defined functions				
+30. Inline Table Valued functions				
+31. Multi-Statement Table Valued functions				
+32. Important concepts related to functions in sql server				
+33. Temporary tables				
+34. Indexes				
+35. Clustered and NonClustered Indexes				
+36. Unique and Non-Unique Indexes				
+37. Advantages and disadvantages of indexes				
+38. Views				
+39. Updateable Views				
+40. Indexed Views				
+41. View Limitations				
+42. DML Triggers				
+43. DML After Update Trigger				
+44. Instead of insert trigger				
+45. Instead of update trigger				
+46. Instead of delete trigger				
+47. Derived table and CTE's				
+48. Common Table Expressions				
+49. Updatable CTE				
+50. Recursive CTE				
+51. Normalization & First Normal Form				
+52. 2NF and 3NF				
+53. Pivot Operator				
+54. Error handling in SQL Server 2000				
+55. Error handling in SQL Server 2005 and later versions				
+56. Transactions in SQL Server				
+57. Transaction ACID Tests				
+58. Subqueries in sql				
+59. Correlated subquery				
+60. Paggination , fetchnext				
+61. RowId				
+62. SQL Job
