@@ -1,0 +1,70 @@
+The WHERE and HAVING clauses in SQL are both used to filter records, but they are used in different contexts and serve different purposes. Here’s a breakdown of the differences:
+
+1. Usage Context
+
+WHERE:
+  - Used to filter rows before any groupings are made.
+  - Can be applied to individual records in a table.
+  - Cannot use aggregate functions directly.
+
+HAVING:
+  - Used to filter groups created by the `GROUP BY` clause.
+  - Applies to aggregated results after the grouping has been performed.
+  - Can use aggregate functions.
+
+2. When to Use
+
+- Use WHERE when you want to filter records based on conditions that do not involve aggregation.
+- Use HAVING when you want to filter groups or aggregated results.
+
+3. Examples
+
+#A. Using WHERE
+
+Imagine you have an `Employees` table and want to find all employees with a salary greater than 50000:
+
+```sql
+SELECT * 
+FROM Employees 
+WHERE Salary > 50000;
+```
+
+This filters individual employee records before any grouping.
+
+#B. Using HAVING
+
+Now, if you want to find departments that have an average salary greater than 50000, you would use `HAVING`:
+
+```sql
+SELECT DepartmentID, AVG(Salary) AS AverageSalary
+FROM Employees
+GROUP BY DepartmentID
+HAVING AVG(Salary) > 50000;
+```
+
+Here, the filtering occurs after the average salary is calculated for each department.
+
+4. Performance
+
+WHERE typically performs better than HAVING because it filters data before the aggregation takes place, reducing the amount of data that needs to be processed.
+  
+5. Combining Both
+
+You can use both clauses in the same query:
+
+```sql
+SELECT DepartmentID, COUNT(*) AS NumberOfEmployees
+FROM Employees
+WHERE Salary > 30000
+GROUP BY DepartmentID
+HAVING COUNT(*) > 5;
+```
+
+In this example:
+- The WHERE clause filters employees with a salary greater than 30000 before grouping.
+- The HAVING clause filters groups of departments that have more than 5 employees after the count has been calculated.
+
+Summary
+
+WHERE: Filters records before aggregation; does not allow aggregate functions.
+HAVING: Filters groups after aggregation; allows aggregate functions.

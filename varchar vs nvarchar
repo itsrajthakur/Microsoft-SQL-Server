@@ -1,0 +1,49 @@
+The main difference between `NVARCHAR` and `VARCHAR` in SQL Server (and other relational databases) revolves around how they store data and the types of characters they can handle.
+
+1. Character Set (Unicode vs Non-Unicode):
+   NVARCHAR: Stands for National Variable Character and supports Unicode characters. This allows `NVARCHAR` to store data in multiple languages, including those that require special characters, such as Chinese, Japanese, Arabic, or any other non-Latin scripts.
+   VARCHAR: Stands for Variable Character and supports non-Unicode characters. It is suitable for storing text that only contains characters from the ASCII or extended ASCII set, typically English or Western European languages.
+
+2. Storage Size:
+   NVARCHAR: Since it supports Unicode, each character in `NVARCHAR` uses 2 bytes of storage (UTF-16 encoding). This means `NVARCHAR(50)` can store up to 50 characters, but it will consume 100 bytes of storage.
+   VARCHAR: Each character in `VARCHAR` uses 1 byte of storage (non-Unicode encoding). Therefore, `VARCHAR(50)` can store 50 characters and will consume 50 bytes of storage.
+
+3. Performance:
+   NVARCHAR: Because it uses 2 bytes per character, it requires more storage and might result in slightly slower performance compared to `VARCHAR`, especially when the dataset is large.
+   VARCHAR: Uses 1 byte per character, making it more efficient in terms of storage and processing when you are dealing only with ASCII characters.
+
+4. Use Case:
+   NVARCHAR: Should be used when the data needs to support multiple languages or special characters (e.g., names, addresses, or text in languages other than English).
+   VARCHAR: Suitable for applications that handle text in English or other languages that use Latin characters only.
+
+5. Storage and Collation:
+   NVARCHAR: Handles Unicode and doesn't depend heavily on the collation setting for multi-language support, as it can store any character from the Unicode character set.
+   VARCHAR: Stores non-Unicode data and relies more on the database's collation setting, which defines how strings are sorted and compared. Different collations are needed to store and compare characters in different languages.
+
+6. Length:
+   NVARCHAR(n): Can store `n` characters, and because of Unicode, it will require `2n` bytes of storage.
+   VARCHAR(n): Can store `n` characters, and it will require `n` bytes of storage.
+
+7. Maximum Size:
+   NVARCHAR: Can store up to 4,000 characters (8,000 bytes) for `NVARCHAR(n)` and 2 GB for `NVARCHAR(MAX)`.
+   VARCHAR: Can store up to 8,000 characters (8,000 bytes) for `VARCHAR(n)` and 2 GB for `VARCHAR(MAX)`.
+
+Summary:
+
+| Feature                    | `NVARCHAR`                                  | `VARCHAR`                                  |
+|----------------------------|---------------------------------------------|--------------------------------------------|
+| Character Set              | Unicode (supports all languages)            | Non-Unicode (ASCII/Extended ASCII)         |
+| Storage Size per Character | 2 bytes                                     | 1 byte                                     |
+| Performance                | Slower (due to larger size)                 | Faster (smaller size)                      |
+| Use Case                   | Multi-language or special characters        | English or languages with Latin characters |
+| Maximum Size               | 4,000 characters (8,000 bytes)              | 8,000 characters (8,000 bytes)             |
+| Collation Dependence       | Less dependent (handles multiple languages) | More dependent on collation                |
+
+When to Use `NVARCHAR` vs `VARCHAR`:
+- Use NVARCHAR if:
+  - You expect to store text in multiple languages (e.g., Chinese, Japanese, Russian).
+  - You want to ensure the ability to handle special characters.
+  
+- Use VARCHAR if:
+  - You are only storing English text or text in languages that use Latin characters.
+  - Storage size and performance are critical and Unicode is not needed.
