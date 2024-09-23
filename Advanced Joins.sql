@@ -1,0 +1,178 @@
+--Advanced joins in SQL Server build on the basic joins, allowing you to perform more complex queries and data manipulations. Some of the most important advanced join techniques are:
+--
+--### 1. **Self Join**
+--   - A self join is a join of a table with itself. It is used when the rows of the table are related to other rows in the same table.
+--   
+--   **Use Case:**
+--   - Useful for hierarchical data, like employees and their managers, where both employees and managers are in the same table.
+--
+--   **Syntax:**
+--   ```sql
+--   SELECT A.EmployeeID, A.Name AS EmployeeName, B.Name AS ManagerName
+--   FROM Employees A
+--   LEFT JOIN Employees B
+--   ON A.ManagerID = B.EmployeeID;
+--   ```
+--
+--   - This query retrieves employees and their managers (where `ManagerID` references the employee's manager in the same table).
+--
+--### 2. **Cross Apply and Outer Apply**
+--   - These joins are used when you need to apply a table-valued function or subquery for each row in the outer query.
+--   - `CROSS APPLY` works like an `INNER JOIN` (only returns matching rows), while `OUTER APPLY` works like a `LEFT JOIN` (returns all rows from the left table, including `NULL` if no match).
+--
+--   **Use Case:**
+--   - Useful for scenarios where a subquery or function returns different results for each row in the main table.
+--
+--   **Syntax:**
+--   ```sql
+--   SELECT E.EmployeeID, E.Name, D.*
+--   FROM Employees E
+--   CROSS APPLY (SELECT TOP 1 * 
+--                FROM Departments D 
+--                WHERE D.DepartmentID = E.DepartmentID 
+--                ORDER BY D.CreatedDate DESC) AS D;
+--   ```
+--   - This query applies a subquery to retrieve the most recent department for each employee.
+--
+--   **Outer Apply Example:**
+--   ```sql
+--   SELECT E.EmployeeID, E.Name, D.*
+--   FROM Employees E
+--   OUTER APPLY (SELECT TOP 1 * 
+--                FROM Departments D 
+--                WHERE D.DepartmentID = E.DepartmentID 
+--                ORDER BY D.CreatedDate DESC) AS D;
+--   ```
+--   - This query will return all employees, even those without departments (`D` will be `NULL` for those employees).
+--
+--### 3. **Natural Join**
+--   - A natural join automatically joins two tables based on columns that have the same name and data type in both tables. While SQL Server doesn’t directly support a `NATURAL JOIN` clause, you can simulate it by using `INNER JOIN` and matching the column names.
+--
+--   **Use Case:**
+--   - Simplifies queries when the join columns share the same names and types across the tables.
+--
+--   **Example (Simulating Natural Join):**
+--   ```sql
+--   SELECT *
+--   FROM Employees E
+--   INNER JOIN Departments D
+--   ON E.DepartmentID = D.DepartmentID;
+--   ```
+--   - Here, the `DepartmentID` column exists in both tables, so the join occurs based on this natural relationship.
+--
+--### 4. **Theta Join (Non-Equi Join)**
+--   - A non-equi join is a join that uses comparison operators other than equality (`=`). It uses operators like `>`, `<`, `>=`, or `<=`.
+--
+--   **Use Case:**
+--   - Useful for range-based joins, like joining orders with discounts based on order amount ranges.
+--
+--   **Syntax:**
+--   ```sql
+--   SELECT O.OrderID, O.OrderAmount, D.Discount
+--   FROM Orders O
+--   JOIN Discounts D
+--   ON O.OrderAmount BETWEEN D.MinOrderAmount AND D.MaxOrderAmount;
+--   ```
+--   - This query matches orders with a discount based on the order amount falling within a specified range.
+--
+--### 5. **Anti Join (NOT EXISTS or LEFT JOIN with IS NULL)**
+--   - An anti-join returns rows from one table that do not have a match in the other table. SQL Server does not have an explicit `ANTI JOIN` keyword, but this can be achieved using `NOT EXISTS` or a `LEFT JOIN` with `IS NULL`.
+--
+--   **Use Case:**
+--   - Useful when you need to find records in one table that don’t exist in another.
+--
+--   **Syntax using `NOT EXISTS`:**
+--   ```sql
+--   SELECT E.EmployeeID, E.Name
+--   FROM Employees E
+--   WHERE NOT EXISTS (
+--       SELECT 1
+--       FROM Orders O
+--       WHERE E.EmployeeID = O.EmployeeID
+--   );
+--   ```
+--   - This query retrieves employees who have never placed an order.
+--
+--   **Syntax using `LEFT JOIN` with `IS NULL`:**
+--   ```sql
+--   SELECT E.EmployeeID, E.Name
+--   FROM Employees E
+--   LEFT JOIN Orders O
+--   ON E.EmployeeID = O.EmployeeID
+--   WHERE O.EmployeeID IS NULL;
+--   ```
+--   - This query also retrieves employees who have no matching records in the `Orders` table.
+--
+--### 6. **Full Outer Join with Coalesce (Combining Data)**
+--   - When performing a `FULL OUTER JOIN`, sometimes you need to combine columns from both tables and handle `NULL` values using `COALESCE()`.
+--
+--   **Use Case:**
+--   - When merging data from two tables and you want to handle cases where values might be missing from either table.
+--
+--   **Example:**
+--   ```sql
+--   SELECT COALESCE(A.EmployeeID, B.EmployeeID) AS EmployeeID,
+--          A.Name AS NameA,
+--          B.Name AS NameB
+--   FROM EmployeesA A
+--   FULL OUTER JOIN EmployeesB B
+--   ON A.EmployeeID = B.EmployeeID;
+--   ```
+--   - This query combines employee data from two tables, ensuring that if an employee exists in one table but not the other, their ID still appears.
+--
+--### 7. **Star Schema Join (Fact and Dimension Tables)**
+--   - This is commonly used in data warehouses where a central fact table is surrounded by dimension tables. You can use joins to query data across the fact and dimension tables.
+--
+--   **Use Case:**
+--   - Aggregating data for reporting purposes, combining facts with dimensional data.
+--
+--   **Example:**
+--   ```sql
+--   SELECT F.SalesAmount, D.CustomerName, P.ProductName
+--   FROM SalesFact F
+--   INNER JOIN CustomersDimension D ON F.CustomerID = D.CustomerID
+--   INNER JOIN ProductsDimension P ON F.ProductID = P.ProductID;
+--   ```
+--   - This query retrieves sales data along with customer and product details.
+--
+--### 8. **Composite Joins (Joining on Multiple Columns)**
+--   - In some cases, you need to join two tables based on multiple columns instead of a single one.
+--
+--   **Use Case:**
+--   - When there is no unique key in a single column, but a combination of columns creates a unique relationship.
+--
+--   **Example:**
+--   ```sql
+--   SELECT O.OrderID, O.OrderDate, P.ProductName
+--   FROM Orders O
+--   INNER JOIN Products P
+--   ON O.ProductID = P.ProductID
+--   AND O.SupplierID = P.SupplierID;
+--   ```
+--   - This query joins orders and products based on both `ProductID` and `SupplierID`.
+--
+--### 9. **Natural Full Outer Join (Combining Data from Two Tables)**
+--   - Simulating a natural full outer join by combining all rows from two tables where they exist and filling in gaps with `NULL`.
+--
+--   **Example:**
+--   ```sql
+--   SELECT COALESCE(A.ID, B.ID) AS ID, A.Name AS NameFromA, B.Name AS NameFromB
+--   FROM TableA A
+--   FULL OUTER JOIN TableB B ON A.ID = B.ID;
+--   ```
+--
+--### Summary of Advanced Joins:
+--
+--| Join Type               | Description |
+--|-------------------------|-------------|
+--| **Self Join**            | Joins a table with itself. |
+--| **Cross Apply / Outer Apply** | Used with table-valued functions or subqueries for each row. |
+--| **Natural Join**         | Automatically joins on matching columns. |
+--| **Theta Join**           | Joins based on conditions other than equality. |
+--| **Anti Join**            | Returns rows from one table that do not have a match in the other. |
+--| **Full Outer Join with Coalesce** | Combines columns from both tables, handling `NULL` values with `COALESCE`. |
+--| **Star Schema Join**     | Joins fact and dimension tables in a star schema (data warehouse). |
+--| **Composite Join**       | Joins tables based on multiple columns. |
+--| **Natural Full Outer Join** | Combines all rows from two tables, filling gaps with `NULL`. |
+--
+--These advanced joins allow for powerful and flexible queries, enabling the ability to handle more complex data relationships and structures.
